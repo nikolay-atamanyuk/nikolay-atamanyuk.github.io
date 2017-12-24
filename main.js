@@ -1,8 +1,9 @@
 ﻿
-(function(data){
 
-	var self=this;
-	var vm=ko.mapping.fromJS(data);
-	
-	ko.applyBindings(vm, document.getElementById("sectionsList"))
+(function(data){
+	var vm=new ViewModel();
+	vm.init(data);
+		
+	ko.applyBindings(vm, document.getElementById("itemList"))
 })(data);
+
