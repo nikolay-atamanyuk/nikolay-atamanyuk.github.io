@@ -19,7 +19,7 @@
   <body>
 	
 	<div id="itemList" class="container">
-		<table class="table table-hover">
+		<table class="table">
 		  <thead>
 			<tr>
 			  <th scope="col">Дата</th>
@@ -27,7 +27,7 @@
 			  <th scope="col">Сцена</th>
 			  <th scope="col">Организатор</th>
 			  <th scope="col">Тип</th>
-			  <th scope="col">Ссылки</th>
+			  <th scope="col">Тэги</th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -49,19 +49,36 @@
 			  <td >
 				<select class="form-control" data-bind="options: types, optionsCaption: 'Все', value:selectedType"></select>
 			  </td>
-			  <td ></td>
+			  <td>
+				<select class="form-control" data-bind="options: tags, optionsCaption: 'Все', value:selectedTag"></select>
+			  </td>
+			  
 			</tr>
 			<!-- ko foreach: concerts -->
 			<tr>
-			  <td data-bind="text:date"></td>
-			  <td data-bind="text:name"></td>
-			  <td data-bind="text:stage"></td>
-			  <td data-bind="text:owner"></td>
-			  <td data-bind="text:type"></td>
-			  <td >
-				<a target="_blank" class="btn btn-outline-info" role="button" data-bind="attr: {href: videoLink}">Видео</a>	
-			  </td>
+				<!-- ko if: tags().length==0 -->
+				<td data-bind="text:date"></td>
+				<!-- /ko -->
+				<!-- ko if: tags().length>0 -->
+				<td rowspan="2" data-bind="text:date"></td>
+				<!-- /ko -->
+				<td data-bind="text:name"></td>
+				<td data-bind="text:stage"></td>
+				<td data-bind="text:owner"></td>
+				<td data-bind="text:type"></td>			  
+				<td class="text-right">
+					<a target="_blank" class="btn btn-outline-info" role="button" data-bind="attr: {href: videoLink}">Видео</a>	
+				</td>
 			</tr>
+			<!-- ko if: tags().length>0 -->
+			<tr >					
+				<td colspan="5">
+					<!-- ko foreach: tags -->
+					<span class="badge" data-bind="css: { 'badge-primary': $data.charAt(0) =='!', 'badge-light': $data.charAt(0) !='!' },text: $data"></span>
+					<!-- /ko -->
+				</td>
+			</tr>
+			<!-- /ko -->
 			<!-- /ko -->	
 		  </tbody>
 		</table>

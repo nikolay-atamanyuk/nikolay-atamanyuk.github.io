@@ -13,6 +13,8 @@ function ViewModel(){
 	self.selectedOwner=ko.observable();
 	self.types=ko.observableArray([]);
 	self.selectedType=ko.observable();
+	self.tags=ko.observableArray([]);
+	self.selectedTag=ko.observable();
 	
 	self.dateAscSort=ko.observable(true);
 	
@@ -35,15 +37,20 @@ function ViewModel(){
 	self.selectedOwner.subscribe(function(){
 		self.filter();
 	});
+	
+	self.selectedTag.subscribe(function(){
+		self.filter();
+	});
 		
 	self.init=function(data){
 		self.source=ko.mapping.fromJS(data);;
 				
 		self.concerts=ko.mapping.fromJS(data);
-		self.names=ko.mapping.fromJS(ArrayDistinct(data, "name").sort());
-		self.stages=ko.mapping.fromJS(ArrayDistinct(data, "stage").sort());
-		self.owners=ko.mapping.fromJS(ArrayDistinct(data, "owner").sort());
-		self.types=ko.mapping.fromJS(ArrayDistinct(data, "type").sort());
+		self.names=ko.mapping.fromJS(ArrayDistinctByField(data, "name").sort());
+		self.stages=ko.mapping.fromJS(ArrayDistinctByField(data, "stage").sort());
+		self.owners=ko.mapping.fromJS(ArrayDistinctByField(data, "owner").sort());
+		self.types=ko.mapping.fromJS(ArrayDistinctByField(data, "type").sort());
+		self.tags=ko.mapping.fromJS(ArrayFlatternByField(data, "tags").sort());
 		
 		self.sort();
 	};
@@ -64,12 +71,13 @@ function ViewModel(){
 	};
 	
 	self.filter=function(){
-		var rez= self.selectedName() || self.selectedStage() || self.selectedOwner() || self.selectedType() 
+		var rez= self.selectedName() || self.selectedStage() || self.selectedOwner() || self.selectedType() || self.selectedTag()
 		? ko.utils.arrayFilter(self.source(), function(item) {
 			return (!self.selectedName() || self.selectedName()==item.name())
 				&& (!self.selectedStage() || self.selectedStage()==item.stage())
 				&& (!self.selectedOwner() || self.selectedOwner()==item.owner())
-				&& (!self.selectedType() || self.selectedType()==item.type());			
+				&& (!self.selectedType() || self.selectedType()==item.type())
+				&& (!self.selectedTag() || item.tags().indexOf(self.selectedTag())!=-1);			
 		})
 		: self.source();
 		

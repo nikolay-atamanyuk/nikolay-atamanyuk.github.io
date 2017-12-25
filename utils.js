@@ -1,5 +1,5 @@
 
-function ArrayDistinct(source, field){
+function ArrayDistinctByField(source, field){
 	var obj = {};
 	
 	for (var i = 0; i < source.length; i++) {
@@ -9,3 +9,16 @@ function ArrayDistinct(source, field){
 
 	return Object.keys(obj);
 };
+
+function ArrayFlatternByField(source, field){
+	var obj = {};
+	
+	for (var i = 0; i < source.length; i++) {
+		for(var j=0; j<source[i][field].length; j++){
+			var str = source[i][field][j];
+			obj[str] = true; 
+		}
+	}
+
+	return Object.keys(obj);
+}
