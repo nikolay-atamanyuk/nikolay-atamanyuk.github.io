@@ -19,73 +19,91 @@
   <body>
 	
 	<div id="itemList" class="container">
-		<table class="table">
-		  <thead>
-			<tr>
-			  <th scope="col">Дата</th>
-			  <th scope="col">Название</th>
-			  <th scope="col">Сцена</th>
-			  <th scope="col">Организатор</th>
-			  <th scope="col">Тип</th>
-			  <th scope="col">Тэги</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			<tr>
-			  <td class="text-center">
-				<button type="button" class="btn btn-outline-secondary" data-bind="click: invertSort, text:dateSorting">				
-					check
-				</button>				
-			  </td>
-			  <td >
-				<select class="form-control" data-bind="options: names, optionsCaption: 'Все', value:selectedName"></select>
-			  </td>
-			  <td >
-				<select class="form-control" data-bind="options: stages, optionsCaption: 'Все', value:selectedStage"></select>
-			  </td>
-			  <td >
-				<select class="form-control" data-bind="options: owners, optionsCaption: 'Все', value:selectedOwner"></select>
-			  </td>
-			  <td >
-				<select class="form-control" data-bind="options: types, optionsCaption: 'Все', value:selectedType"></select>
-			  </td>
-			  <td>
-				<select class="form-control" data-bind="options: tags, optionsCaption: 'Все', value:selectedTag"></select>
-			  </td>
-			  
-			</tr>
-			<!-- ko foreach: concerts -->
-			<tr>
-				<!-- ko if: tags().length==0 -->
-				<td data-bind="text:date"></td>
+		
+		<div class="row">
+			<div class="col-3">
+				<div class="card bg-light my-1">
+					<div class="card-header">Фильтры</div>
+					<div class="card-body">				
+						
+								<div class="form-group">
+									<label>Название</label>
+									<select class="form-control" data-bind="options: names, optionsCaption:'Все', value: selectedName"></select>
+								</div>
+						
+								<div class="form-group">
+									<label>Сцена</label>
+									<select class="form-control" data-bind="options: stages, optionsCaption:'Все', value: selectedStage"></select>
+								</div>
+						
+								<div class="form-group">
+									<label>Участник</label>
+									<select class="form-control" data-bind="options: actors, optionsCaption:'Все', value: selectedActor"></select>							  
+								</div>
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-9">
+				<!-- ko foreach: concerts -->
+				<div class="card my-1">
+					<div class="card-body">				
+						<h4 class="card-title" data-bind="text: name">Name</h4>				
+						
+						<div class="row">
+							<div class="col" style="max-width: 112px;" data-bind="text: date">Date</div>
+							<div class="col" data-bind="text: stage">Stage</div>
+							<div class="col" data-bind="text: type">Type</div>
+							<div class="col" data-bind="text: owner">Organizer</div>					
+							<div class="col text-right">
+								<a target="_blank" class="btn btn-outline-info" role="button" data-bind="attr: {href: videoLink}">Видео</a>	
+							</div>
+						</div>
+						
+						<!-- ko if: $data.members -->
+						<hr>
+						<div class="row">
+							<div class="col" style="max-width: 110px;">Участники</div>
+							<div class="col">
+								<!-- ko foreach: members -->
+								<small class="pr-3" data-bind="text: actor"></small>													
+								<!-- /ko -->
+							</div>					
+						</div>
+						<!-- /ko -->
+						
+						<!-- ko if: $data.compositions -->
+						<hr>
+						<div class="row">
+							<div class="col" style="max-width: 110px;">Номера</div>					
+							<div class="col">
+								<!-- ko foreach: compositions -->
+								<small class="pr-3" data-bind="text: $data"></small>
+								<!-- /ko -->
+							</div>			
+						</div>				
+						<!-- /ko -->
+						
+						<!-- ko if: $data.tags -->
+						<hr>
+						<div class="row">
+							<div class="col" style="max-width: 110px;">Разное</div>					
+							<div class="col">
+								<!-- ko foreach: tags -->
+								<small class="pr-3" data-bind="text: $data"></small>
+								<!-- /ko -->
+							</div>			
+						</div>				
+						<!-- /ko -->
+						
+					</div> 		
+				</div>
+				
 				<!-- /ko -->
-				<!-- ko if: tags().length>0 -->
-				<td rowspan="2" data-bind="text:date"></td>
-				<!-- /ko -->
-				<td data-bind="text:name"></td>
-				<td data-bind="text:stage"></td>
-				<td data-bind="text:owner"></td>
-				<td data-bind="text:type"></td>			  
-				<td class="text-right">
-					<a target="_blank" class="btn btn-outline-info" role="button" data-bind="attr: {href: videoLink}">Видео</a>	
-				</td>
-			</tr>
-			<!-- ko if: tags().length>0 -->
-			<tr >					
-				<td colspan="5">
-					<!-- ko foreach: tags -->
-					<span class="badge" data-bind="css: { 'badge-primary': $data.charAt(0) =='!', 'badge-light': $data.charAt(0) !='!' },text: $data"></span>
-					<!-- /ko -->
-				</td>
-			</tr>
-			<!-- /ko -->
-			<!-- /ko -->	
-		  </tbody>
-		</table>
-								
-		<div  id="faq"  class="well anchor">
-			<div class="list-group">
-				<div class="list-group-item">
+			
+				<div class="jumbotron">
+					
 					<h2 class="list-group-item-heading">Размещение файлов</h2>
 					<p class="list-group-item-text">
 					Файлы хранятся в облаке <a href="https://mega.nz/" target="_blank">Mega</a>, бывший MegaUpload.com. 
@@ -96,9 +114,8 @@
 						<li><a href="https://chrome.google.com/webstore/detail/mega/bigefpfhnfcobdlfbedofhhaibnlghod" target="_blank">Расширение Mega для Chrome</a></li>
 						<li><a href="https://mega.nz/meganz.xpi" target="_blank">Расширение Mega для FireFox</a></li>
 					</ul>
-				</div>
-				
-				<div class="list-group-item">
+					<hr>			
+					
 					<h2 class="list-group-item-heading">Воспроизведение видео</h2>
 					<p class="list-group-item-text">
 						Видео оптимизировано для проигрывания на компьютере и закодировано кодаком x264 в Matroska. 
@@ -108,18 +125,22 @@
 						На текущий момент наиболее полный набор видео кодаков <a href="http://codecguide.com/download_kl.htm" target="_blank">K-Lite Codec Pack</a>. 
 						Так же в этом наборе есть очень неплохой видео проигрыватель.
 					</p>
-				</div>
-				
-				<div class="list-group-item">
+					<hr>
+					
 					<h2 class="list-group-item-heading">Статус страницы</h2>
 					<p class="list-group-item-text">
 						На текущий момент данный сервис находится в тестовом режиме. Пожелания и предложения можно писать <a href="mailto:ezhi.mail@gmail.com">сюда</a>.
 					</p>
+				
 				</div>
-			
 			</div>
 		</div>
+	
+		
+	
+		
 	</div>
+	
 
 	<!--
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -128,8 +149,7 @@
 	-->
 	
 	<script src="knockout-3.4.2.js"></script/>
-	<script src="knockout.mapping.js"></script>
-	<script src="utils.js"></script>
+	<script src="knockout.mapping.js"></script>	
 	<script src="data.js"></script>
 	<script src="ViewModel.js"></script>
 	<script src="main.js"></script>

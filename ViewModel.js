@@ -9,13 +9,9 @@ function ViewModel(){
 	self.selectedName=ko.observable();
 	self.stages=ko.observableArray([]);
 	self.selectedStage=ko.observable();
-	self.owners=ko.observableArray([]);
-	self.selectedOwner=ko.observable();
-	self.types=ko.observableArray([]);
-	self.selectedType=ko.observable();
-	self.tags=ko.observableArray([]);
-	self.selectedTag=ko.observable();
-	
+	self.actors=ko.observableArray([]);
+	self.selectedActor=ko.observable();
+		
 	self.dateAscSort=ko.observable(true);
 	
 	self.dateSorting = ko.computed(function() {
@@ -30,30 +26,52 @@ function ViewModel(){
 		self.filter();
 	});
 	
-	self.selectedType.subscribe(function(){
+	self.selectedActor.subscribe(function(){
 		self.filter();
 	});
-	
-	self.selectedOwner.subscribe(function(){
-		self.filter();
-	});
-	
-	self.selectedTag.subscribe(function(){
-		self.filter();
-	});
+		
 		
 	self.init=function(data){
 		self.source=ko.mapping.fromJS(data);;
 				
 		self.concerts=ko.mapping.fromJS(data);
-		self.names=ko.mapping.fromJS(ArrayDistinctByField(data, "name").sort());
-		self.stages=ko.mapping.fromJS(ArrayDistinctByField(data, "stage").sort());
-		self.owners=ko.mapping.fromJS(ArrayDistinctByField(data, "owner").sort());
-		self.types=ko.mapping.fromJS(ArrayDistinctByField(data, "type").sort());
-		self.tags=ko.mapping.fromJS(ArrayFlatternByField(data, "tags").sort());
-		
+		self.buildFilters(data);
+				
 		self.sort();
 	};
+	
+	self.buildFilters=function(source){
+		self.names=ko.mapping.fromJS(self.getGroupedField(source, "name").sort());
+		self.stages=ko.mapping.fromJS(self.getGroupedField(source, "stage").sort());
+		self.actors=ko.mapping.fromJS(self.getGroupedActors(source).sort());
+	};
+	
+	self.getGroupedField=function(source, field){
+		
+		var obj = {};
+	
+		for (var i = 0; i < source.length; i++) {
+			var str = source[i][field];
+			obj[str] = true; 
+		}
+
+		return Object.keys(obj);		
+	};
+	
+	
+	self.getGroupedActors=function(source){
+		var obj = {};
+	
+		for (var i = 0; i < source.length; i++) {
+			var members = source[i].members;
+			if(members)
+				for(var j=0; j<members.length; j++)
+					obj[members[j].actor]=true;								
+		}
+
+		return Object.keys(obj);
+	};
+	
 	
 	self.invertSort=function(){
 		self.dateAscSort(!self.dateAscSort());
@@ -71,15 +89,16 @@ function ViewModel(){
 	};
 	
 	self.filter=function(){
-		var rez= self.selectedName() || self.selectedStage() || self.selectedOwner() || self.selectedType() || self.selectedTag()
+		var rez= self.selectedName() || self.selectedStage() || self.selectedActor()
 		? ko.utils.arrayFilter(self.source(), function(item) {
 			return (!self.selectedName() || self.selectedName()==item.name())
 				&& (!self.selectedStage() || self.selectedStage()==item.stage())
-				&& (!self.selectedOwner() || self.selectedOwner()==item.owner())
-				&& (!self.selectedType() || self.selectedType()==item.type())
-				&& (!self.selectedTag() || item.tags().indexOf(self.selectedTag())!=-1);			
+				&& (!self.selectedActor() || (item.members && ko.utils.arrayFirst(item.members(), function(member){ return member.actor()===self.selectedActor()})))
+				;			
 		})
 		: self.source();
+		
+		self.buildFilters(rez);
 		
 		self.concerts(rez);
 		self.sort();
