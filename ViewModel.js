@@ -18,6 +18,8 @@ function ViewModel(){
 	self.dateAscSort=ko.observable(false);
 	
 	self.hasTags=ko.observable(false);
+	
+	self.lastUploads=ko.observable(false);
 		
 	self.selectedName.subscribe(function(){
 		self.filter();
@@ -47,15 +49,16 @@ function ViewModel(){
 		if(!self.selectedStage())
 			self.stages(self.getGroupedField(source, "stage").sort());
 		if(!self.selectedActor())
-		self.actors(self.getGroupedActors(source).sort());
+			self.actors(self.getGroupedActors(source).sort());
 	};
 	
 	self.resetFilters=function(){
 		self.selectedName(null);
 		self.selectedStage(null);
 		self.selectedActor(null);
-		self.dateAscSort(true);
+		self.dateAscSort(false);
 		self.hasTags(false);
+		self.lastUploads(false);
 		
 		self.filter();
 	};
@@ -93,6 +96,12 @@ function ViewModel(){
 		self.sort();
 	};
 	
+	self.invertLastUploads=function(){
+		self.lastUploads(!self.lastUploads());
+		
+		self.filter();
+	};
+	
 	self.invertTags=function(){
 		self.hasTags(!self.hasTags());
 		
@@ -108,13 +117,27 @@ function ViewModel(){
 		});
 	};
 	
+	self.getLastUploadDate=function(){
+		var date=self.source()[0].videoLink.uploadDate();
+		
+		ko.utils.arrayForEach(self.source(), function(item){
+			if(date<item.videoLink.uploadDate())
+				date=item.videoLink.uploadDate();
+		});
+		
+		return date;
+	};
+	
 	self.filter=function(){
-		var rez= self.selectedName() || self.selectedStage() || self.selectedActor() || self.hasTags()
+		var lastUploadDate=self.getLastUploadDate();
+				
+		var rez= self.selectedName() || self.selectedStage() || self.selectedActor() || self.hasTags() || self.lastUploads()
 				? ko.utils.arrayFilter(self.source(), function(item) {
 					return (!self.selectedName() || self.selectedName()==item.name())
 						&& (!self.selectedStage() || self.selectedStage()==item.stage())
 						&& (!self.selectedActor() || (item.members && ko.utils.arrayFirst(item.members(), function(member){ return member.actor()===self.selectedActor()})))
 						&& (!self.hasTags() || (self.hasTags() && item.tags))				
+						&& (!self.lastUploads() || (self.lastUploads() && item.videoLink.uploadDate()==lastUploadDate))				
 						;			
 					})
 				: self.source();

@@ -22,15 +22,18 @@
 		
 		<div class="row">
 			<div class="col-3">
-				<div class="card bg-light my-1">
-					<div class="card-header">Фильтры</div>
+				<div class="card bg-light my-1 border border-info">
+					<div class="card-header ">
+						<span class="font-weight-bold">Фильтры </span>
+						<span class="badge badge-secondary float-right mt-1" data-bind="text: concerts().length"></span>
+					</div>
 					<div class="card-body">				
 					
 						<div class="form-group">
 							<label>Сортировка</label>
 							<div class="btn-group w-100" role="group" >
-							  <button type="button" class="btn w-50" data-bind="click:invertSort, css:{'btn-primary':dateAscSort(), 'btn-secondary':!dateAscSort()}">Прямая</button>
-							  <button type="button" class="btn w-50" data-bind="click:invertSort, css:{'btn-primary':!dateAscSort(), 'btn-secondary':dateAscSort()}">Обратная</button>						
+							  <button type="button" class="btn w-50" data-bind="click:invertSort, css:{'btn-info':dateAscSort(), 'btn-outline-info':!dateAscSort()}">Прямая</button>
+							  <button type="button" class="btn w-50" data-bind="click:invertSort, css:{'btn-info':!dateAscSort(), 'btn-outline-info':dateAscSort()}">Обратная</button>						
 							</div>
 						</div>
 						
@@ -50,24 +53,25 @@
 							<select class="form-control" data-bind="options: actors, optionsCaption:'Все', value: selectedActor"></select>							  
 						</div>
 						
-						<button class="btn w-100 mb-3" data-bind="click: invertTags, css:{'btn-primary': hasTags(), 'btn-secondary':!hasTags()}">Только с тегами</button>										
+						<button class="btn w-100 mb-3" data-bind="click: invertTags, css:{'btn-info': hasTags(), 'btn-outline-info':!hasTags()}">Только с тегами</button>										
+						<button class="btn w-100 mb-3" data-bind="click: invertLastUploads, css:{'btn-info': lastUploads(), 'btn-outline-info':!lastUploads()}">Последние загрузки</button>										
 												
 						<hr>
-						<button class="btn btn-outline-secondary w-100" data-bind="click: resetFilters">Сбросить фильтры</button>
+						<button class="btn btn-info w-100" data-bind="click: resetFilters">Сбросить фильтры</button>
 						
 					</div>
 				</div>
 				
 				
 				<div class="sticky-top">
-					<a class="btn btn-outline-secondary w-100" href="#placeholder">вернуться наверх</a>
+					<a class="btn btn-light w-100" href="#placeholder">вернуться наверх</a>
 				</div>
 				
 			</div>
 			
 			<div class="col-9">
 				<!-- ko foreach: concerts -->
-				<div class="card my-1">
+				<div class="card my-1 border border-info">
 					<div class="card-body">				
 						<h4 class="card-title" data-bind="text: name">Name</h4>				
 						
