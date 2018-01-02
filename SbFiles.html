@@ -53,6 +53,7 @@
 							<select class="form-control" data-bind="options: actors, optionsCaption:'Все', value: selectedActor"></select>							  
 						</div>
 						
+						<button class="btn w-100 mb-3" data-bind="click: invertPremieres, css:{'btn-info': premieres(), 'btn-outline-info':!premieres()}">Только премьеры</button>										
 						<button class="btn w-100 mb-3" data-bind="click: invertTags, css:{'btn-info': hasTags(), 'btn-outline-info':!hasTags()}">Только с тегами</button>										
 						<button class="btn w-100 mb-3" data-bind="click: invertLastUploads, css:{'btn-info': lastUploads(), 'btn-outline-info':!lastUploads()}">Последние загрузки</button>										
 												
@@ -72,8 +73,8 @@
 			<div class="col-9">
 				<!-- ko foreach: concerts -->
 				<div class="card my-1 border border-info">
-					<div class="card-body">				
-						<h4 class="card-title" data-bind="text: name">Name</h4>				
+					<div class="card-body">										
+						<h4 class="card-title"> <!--ko text: name--><!--/ko--> <small class="text-muted" data-bind="visible: $data.premiere">премьера</small></h4>				
 						
 						<div class="row">
 							<div class="col" style="max-width: 112px;" data-bind="text: date">Date</div>

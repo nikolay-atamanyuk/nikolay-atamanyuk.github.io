@@ -17,6 +17,8 @@ function ViewModel(){
 		
 	self.dateAscSort=ko.observable(false);
 	
+	self.premieres=ko.observable(false);
+	
 	self.hasTags=ko.observable(false);
 	
 	self.lastUploads=ko.observable(false);
@@ -57,6 +59,7 @@ function ViewModel(){
 		self.selectedStage(null);
 		self.selectedActor(null);
 		self.dateAscSort(false);
+		self.premieres(false);
 		self.hasTags(false);
 		self.lastUploads(false);
 		
@@ -96,6 +99,12 @@ function ViewModel(){
 		self.sort();
 	};
 	
+	self.invertPremieres=function(){
+		self.premieres(!self.premieres());
+		
+		self.filter();
+	};
+	
 	self.invertLastUploads=function(){
 		self.lastUploads(!self.lastUploads());
 		
@@ -131,11 +140,12 @@ function ViewModel(){
 	self.filter=function(){
 		var lastUploadDate=self.getLastUploadDate();
 				
-		var rez= self.selectedName() || self.selectedStage() || self.selectedActor() || self.hasTags() || self.lastUploads()
+		var rez= self.selectedName() || self.selectedStage() || self.selectedActor() || self.hasTags() || self.lastUploads() || self.premieres()
 				? ko.utils.arrayFilter(self.source(), function(item) {
 					return (!self.selectedName() || self.selectedName()==item.name())
 						&& (!self.selectedStage() || self.selectedStage()==item.stage())
 						&& (!self.selectedActor() || (item.members && ko.utils.arrayFirst(item.members(), function(member){ return member.actor()===self.selectedActor()})))
+						&& (!self.premieres() || (self.premieres() && item.premiere))				
 						&& (!self.hasTags() || (self.hasTags() && item.tags))				
 						&& (!self.lastUploads() || (self.lastUploads() && item.videoLink.uploadDate()==lastUploadDate))				
 						;			
